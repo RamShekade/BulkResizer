@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Check, Percent } from "lucide-react";
 import { useImages } from "../hooks/useImages";
+import { getSizeByPercentage } from "../utils/getSize";
 
 export default function Dashboard() {
   const { images } = useImages();
 
-    const [percentage, setPercentage] = useState(50);
+    const [percentage, setPercentage] = useState<number>(50);
     const [width, setWidth] = useState<number | "">("");
     const [height, setHeight] = useState<number | "">("");
     const [mode, setMode] = useState<"pixels" | "percentage">("percentage");
+
 
 
   const presets = [25, 50, 75];
@@ -38,13 +40,7 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {images.map((image) => {
-              const resizedWidth = Math.round(
-                image.width * (percentage / 100)
-              );
-
-              const resizedHeight = Math.round(
-                image.height * (percentage / 100)
-              );
+              const {resizedWidth , resizedHeight} = getSizeByPercentage(image.width, image.height, percentage);
 
               return (
                <div
