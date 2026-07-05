@@ -2,10 +2,16 @@
 
 import { useCallback, useRef, useState } from "react";
 import { CloudUpload } from "lucide-react";
+import { Image } from "@/models/Image";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "./constants/query-keys";
+import { useRouter } from "next/navigation";
 
 interface UploadHeroProps {
   onFilesSelected?: (files: File[]) => void;
 }
+
 
 export default function UploadHero({
   onFilesSelected,
@@ -13,16 +19,42 @@ export default function UploadHero({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dragging, setDragging] = useState(false);
-
+  const queryClient = useQueryClient();
+const router = useRouter();
   const handleFiles = useCallback(
-    (fileList: FileList | null) => {
+    async (fileList: FileList | null) => {
       if (!fileList) return;
 
       const files = Array.from(fileList).filter((file) =>
         file.type.startsWith("image/")
       );
       if (!files.length) return;
+      console.log("files", files);
+      const images: Image[] = [];
 
+      await Promise.all(
+        files.map(async (file) => {
+          const imageBitmap = await createImageBitmap(file);
+          const Image: Image = {
+            id: crypto.randomUUID(),
+            name: file.name,
+            size: file.size,
+            type: file.type,
+
+            uri: URL.createObjectURL(file),
+            height: imageBitmap.height,
+            width: imageBitmap.width,
+          };
+          images.push(Image);
+        })
+      );
+      console.log("images", images);
+    
+      queryClient.setQueryData(QUERY_KEYS.IMAGES.ALL, images);
+      console.log(
+  queryClient.getQueryData(QUERY_KEYS.IMAGES.ALL)
+      );
+      router.replace("/dashboard");
       onFilesSelected?.(files);
     },
     [onFilesSelected]

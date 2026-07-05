@@ -1,170 +1,247 @@
 "use client";
 
-import {
-    ImagePlus,
-    ArrowRight,
-    Percent,
-    ScanLine,
-    Check
-} from "lucide-react";
+import { useState } from "react";
+import { Check } from "lucide-react";
+import { useImages } from "../hooks/useImages";
 
 export default function Dashboard() {
-    return (
-        <main className="flex h-screen bg-[#FFF7FB]">
+  const { images } = useImages();
 
-            {/* Left */}
+    const [percentage, setPercentage] = useState(50);
+    const [width, setWidth] = useState<number | "">("");
+    const [height, setHeight] = useState<number | "">("");
+    const [mode, setMode] = useState<"pixels" | "percentage">("percentage");
 
-            <section className="flex-1 p-8">
 
-                <div className="relative h-full rounded-3xl bg-white border border-pink-100 shadow-sm">
+  const presets = [25, 50, 75];
 
-                    {/* Floating Buttons */}
+  return (
+    <main className="flex min-h-screen bg-[#faf8fc]">
 
-                    <div className="absolute right-6 top-6 flex flex-col gap-3">
+      <section className="flex-1 overflow-y-auto p-8">
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-4xl font-bold text-gray-900">
+            Uploaded Images
+          </h1>
 
-                        <button className="h-14 w-14 rounded-full bg-pink-500 text-white shadow-lg flex items-center justify-center">
-                            <ImagePlus size={28}/>
-                        </button>
+          <div className="rounded-full bg-pink-100 px-4 py-2 text-sm font-semibold text-pink-600">
+            {images.length} Images
+          </div>
+        </div>
 
-                        <button className="h-12 w-12 rounded-full bg-white shadow flex items-center justify-center">
-                            A↓Z
-                        </button>
+        {images.length === 0 ? (
+          <div className="flex h-[70vh] items-center justify-center rounded-3xl border-2 border-dashed border-pink-200 bg-white">
+            <p className="text-lg text-gray-500">
+              No Images Uploaded
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {images.map((image) => {
+              const resizedWidth = Math.round(
+                image.width * (percentage / 100)
+              );
 
-                    </div>
+              const resizedHeight = Math.round(
+                image.height * (percentage / 100)
+              );
 
-                    {/* Images */}
+              return (
+               <div
+                key={image.id}
+                className="group relative rounded-2xl border border-gray-200 bg-white px-3 py-10 shadow-sm transition-all hover:border-pink-300 hover:shadow-lg"
+                >
 
-                    <div className="flex gap-8 p-16">
+                <button className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-500 shadow transition hover:bg-red-50 hover:text-red-500">
+                    ✕
+                </button>
 
-                        {[1,2].map((i)=>(
-                            <div
-                                key={i}
-                                className="w-64 rounded-3xl bg-white shadow-lg border border-pink-100 p-4 hover:shadow-xl transition"
-                            >
 
-                                <div className="aspect-[4/3] rounded-xl bg-pink-50"/>
-
-                                <h3 className="mt-5 text-center font-medium truncate">
-                                    kitchen-image-{i}.jpg
-                                </h3>
-
-                                <div className="mt-4 flex justify-center gap-2">
-
-                                    <span className="rounded-full bg-gray-200 px-3 py-1 text-xs">
-                                        3840 × 2559
-                                    </span>
-
-                                    <span className="rounded-full bg-pink-500 text-white px-3 py-1 text-xs">
-                                        1920 × 1280
-                                    </span>
-
-                                </div>
-
-                            </div>
-                        ))}
-
-                    </div>
-
+                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg bg-white">
+                    <img
+                    src={image.uri}
+                    alt={image.name}
+                    className="max-h-full max-w-full object-contain"
+                    />
                 </div>
 
-            </section>
+                <p className="mt-5 truncate text-center text-sm text-gray-700">
+                    {image.name}
+                </p>
 
-            {/* Right Panel */}
 
-            <aside className="w-[380px] bg-white border-l border-pink-100 flex flex-col">
+                <div className="mt-3 flex items-center justify-center gap-1 text-[12px] font-medium">
+                    <span className="rounded bg-gray-400 px-2 py-1 text-white">
+                    {image.width} × {image.height}
+                    </span>
 
-                <div className="p-8">
+                    <span className="text-gray-400">→</span>
 
-                    <h1 className="text-4xl font-bold">
-                        Resize Options
-                    </h1>
-
-                    {/* Toggle */}
-
-                    <div className="mt-8 grid grid-cols-2 rounded-2xl border overflow-hidden">
-
-                        <button className="flex flex-col items-center py-7 hover:bg-pink-50">
-
-                            <ScanLine
-                                className="mb-2 text-pink-500"
-                                size={38}
-                            />
-
-                            By Pixels
-
-                        </button>
-
-                        <button className="bg-pink-50 flex flex-col items-center py-7 relative">
-
-                            <Check
-                                size={18}
-                                className="absolute left-3 top-3 rounded-full bg-green-500 text-white p-0.5"
-                            />
-
-                            <Percent
-                                className="mb-2 text-pink-600"
-                                size={38}
-                            />
-
-                            By Percentage
-
-                        </button>
-
-                    </div>
-
-                    {/* Presets */}
-
-                    <div className="mt-8 rounded-2xl border divide-y">
-
-                        {[
-                            "25% Smaller",
-                            "50% Smaller",
-                            "75% Smaller",
-                            "Custom"
-                        ].map((item,index)=>(
-                            <button
-                                key={item}
-                                className={`flex w-full items-center justify-between px-6 py-5 transition hover:bg-pink-50 ${
-                                    index===1 && "bg-pink-50"
-                                }`}
-                            >
-                                <span className="font-medium">
-                                    {item}
-                                </span>
-
-                                {index===1 &&
-                                    <div className="h-8 w-8 rounded-full bg-pink-500 text-white flex items-center justify-center">
-                                        ✓
-                                    </div>
-                                }
-
-                            </button>
-                        ))}
-
-                    </div>
-
+                    <span className="rounded bg-blue-500 px-2 py-1 text-white">
+                    {resizedWidth} × {resizedHeight}
+                    </span>
                 </div>
-
-                {/* Bottom */}
-
-                <div className="mt-auto p-6">
-
-                    <button className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg hover:scale-[1.02] transition">
-
-                        <div className="flex items-center justify-center gap-3">
-
-                            Resize Images
-
-                            <ArrowRight/>
-
-                        </div>
-
-                    </button>
-
                 </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
-            </aside>
+      <aside className="sticky top-0 h-screen w-[380px] border-l border-pink-100 bg-white shadow-xl">
+        <div className="border-b p-8">
+          <h2 className="text-4xl font-bold">
+            Resize Options
+          </h2>
+        </div>
 
-        </main>
-    );
+
+        <div className="grid grid-cols-2 border-b">
+        <button
+            onClick={() => setMode("pixels")}
+            className={`relative flex flex-col items-center gap-3 border-r py-8 transition ${
+            mode === "pixels"
+                ? "bg-pink-50 text-pink-600"
+                : "text-gray-400 hover:bg-gray-50"
+            }`}
+        >
+            {mode === "pixels" && (
+            <div className="absolute left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
+                <Check className="h-4 w-4 text-white" />
+            </div>
+            )}
+
+            <div className="text-5xl">⬚</div>
+
+            <span className="font-medium">
+            By Pixels
+            </span>
+        </button>
+
+        <button
+            onClick={() => setMode("percentage")}
+            className={`relative flex flex-col items-center gap-3 py-8 transition ${
+            mode === "percentage"
+                ? "bg-pink-50 text-pink-600"
+                : "text-gray-400 hover:bg-gray-50"
+            }`}
+        >
+            {mode === "percentage" && (
+            <div className="absolute left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
+                <Check className="h-4 w-4 text-white" />
+            </div>
+            )}
+
+            <div className="text-5xl">%</div>
+
+            <span className="font-medium">
+            By Percentage
+            </span>
+        </button>
+        </div>
+
+        {mode === "percentage" && (
+        <>
+            <div className="border-b">
+            {presets.map((value) => (
+                <button
+                key={value}
+                onClick={() => setPercentage(value)}
+                className={`flex w-full items-center justify-between border-b px-8 py-5 ${
+                    percentage === value
+                    ? "bg-pink-50 text-pink-600"
+                    : "hover:bg-pink-50"
+                }`}
+                >
+                <span>{value}%</span>
+
+                {percentage === value && (
+                    <Check className="text-green-500" />
+                )}
+                </button>
+            ))}
+            </div>
+
+            <div className="p-8">
+            <label className="mb-2 block font-medium">
+                Custom Percentage
+            </label>
+
+            <div className="relative">
+                <input
+                type="number"
+                value={percentage}
+                min={1}
+                max={100}
+                onChange={(e) =>
+                    setPercentage(
+                    Math.max(
+                        1,
+                        Math.min(100, Number(e.target.value))
+                    )
+                    )
+                }
+                className="w-full rounded-xl border px-4 py-3 pr-12"
+                />
+
+                <span className="absolute right-4 top-1/2 -translate-y-1/2">
+                %
+                </span>
+            </div>
+            </div>
+        </>
+              )}
+        {mode === "pixels" && (
+        <div className="space-y-6 p-8">
+            <div>
+            <label className="mb-2 block font-medium">
+                Width
+            </label>
+
+            <input
+                type="number"
+                value={width}
+                onChange={(e) =>
+                setWidth(Number(e.target.value))
+                }
+                placeholder="Width"
+                className="w-full rounded-xl border px-4 py-3"
+            />
+            </div>
+
+            <div>
+            <label className="mb-2 block font-medium">
+                Height
+            </label>
+
+            <input
+                type="number"
+                value={height}
+                onChange={(e) =>
+                setHeight(Number(e.target.value))
+                }
+                placeholder="Height"
+                className="w-full rounded-xl border px-4 py-3"
+            />
+            </div>
+
+            <label className="flex items-center gap-3">
+            <input
+                type="checkbox"
+                defaultChecked
+            />
+
+            <span>Maintain Aspect Ratio</span>
+            </label>
+        </div>
+        )}
+
+        <div className="absolute bottom-0 left-0 w-full border-t bg-white p-6">
+          <button className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg transition hover:scale-[1.02]">
+            Resize Images
+          </button>
+        </div>
+      </aside>
+    </main>
+  );
 }

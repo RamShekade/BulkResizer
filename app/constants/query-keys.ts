@@ -1,4 +1,4 @@
-const QUERY_KEYS = {
+export const QUERY_KEYS = {
     IMAGES: {
         ALL: ["images"] as const,
     }
