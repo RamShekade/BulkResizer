@@ -49,7 +49,7 @@ const router = useRouter();
         })
       );
       console.log("images", images);
-    
+      
       queryClient.setQueryData(QUERY_KEYS.IMAGES.ALL, images);
       console.log(
   queryClient.getQueryData(QUERY_KEYS.IMAGES.ALL)

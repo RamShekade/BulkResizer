@@ -1,18 +1,20 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { Check, Percent } from "lucide-react";
+import { useState } from "react";
+import { Check } from "lucide-react";
 import { useImages } from "../hooks/useImages";
-import { getSizeByPercentage } from "../utils/getSize";
+import { getSizeByPercentage, getSizeByPixels } from "../utils/getSize";
+import { useResizeImages } from "../hooks/useResizeImgages";
+import ImageCard from "../components/imageCard";
 
 export default function Dashboard() {
-  const { images } = useImages();
+    const { images } = useImages();
 
     const [percentage, setPercentage] = useState<number>(50);
     const [width, setWidth] = useState<number | "">("");
     const [height, setHeight] = useState<number | "">("");
     const [mode, setMode] = useState<"pixels" | "percentage">("percentage");
-
+    const { resizeAndDownload } = useResizeImages();
 
 
   const presets = [25, 50, 75];
@@ -40,44 +42,14 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {images.map((image) => {
-              const {resizedWidth , resizedHeight} = getSizeByPercentage(image.width, image.height, percentage);
+              const {resizedWidth , resizedHeight} = mode === "percentage"
+                ? getSizeByPercentage(image.width, image.height, percentage)
+                : getSizeByPixels(image.width, image.height, Number(width), Number(height));
+              image.resizedHeight = resizedHeight;
+              image.resizedWidth = resizedWidth;
 
               return (
-               <div
-                key={image.id}
-                className="group relative rounded-2xl border border-gray-200 bg-white px-3 py-10 shadow-sm transition-all hover:border-pink-300 hover:shadow-lg"
-                >
-
-                <button className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-500 shadow transition hover:bg-red-50 hover:text-red-500">
-                    ✕
-                </button>
-
-
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg bg-white">
-                    <img
-                    src={image.uri}
-                    alt={image.name}
-                    className="max-h-full max-w-full object-contain"
-                    />
-                </div>
-
-                <p className="mt-5 truncate text-center text-sm text-gray-700">
-                    {image.name}
-                </p>
-
-
-                <div className="mt-3 flex items-center justify-center gap-1 text-[12px] font-medium">
-                    <span className="rounded bg-gray-400 px-2 py-1 text-white">
-                    {image.width} × {image.height}
-                    </span>
-
-                    <span className="text-gray-400">→</span>
-
-                    <span className="rounded bg-blue-500 px-2 py-1 text-white">
-                    {resizedWidth} × {resizedHeight}
-                    </span>
-                </div>
-                </div>
+                <ImageCard key={image.id} image={image} />
               );
             })}
           </div>
@@ -146,20 +118,20 @@ export default function Dashboard() {
                 className={`flex w-full items-center justify-between border-b px-8 py-5 ${
                     percentage === value
                     ? "bg-pink-50 text-pink-600"
-                    : "hover:bg-pink-50"
+                    : "hover:bg-pink-50 text-gray-300"
                 }`}
                 >
                 <span>{value}%</span>
 
                 {percentage === value && (
-                    <Check className="text-green-500" />
+                    <Check className="text-black-500" />
                 )}
                 </button>
             ))}
             </div>
 
-            <div className="p-8">
-            <label className="mb-2 block font-medium">
+            <div className="p-5">
+            <label className="mb-2 block font-medium text-gray-700">
                 Custom Percentage
             </label>
 
@@ -177,10 +149,10 @@ export default function Dashboard() {
                     )
                     )
                 }
-                className="w-full rounded-xl border px-4 py-3 pr-12"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500 pr-12"
                 />
 
-                <span className="absolute right-4 top-1/2 -translate-y-1/2">
+                <span className="absolute text-gray-500 right-4 top-1/2 -translate-y-1/2">
                 %
                 </span>
             </div>
@@ -190,7 +162,7 @@ export default function Dashboard() {
         {mode === "pixels" && (
         <div className="space-y-6 p-8">
             <div>
-            <label className="mb-2 block font-medium">
+            <label className="mb-2 block font-medium text-gray-700">
                 Width
             </label>
 
@@ -201,12 +173,12 @@ export default function Dashboard() {
                 setWidth(Number(e.target.value))
                 }
                 placeholder="Width"
-                className="w-full rounded-xl border px-4 py-3"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500"
             />
             </div>
 
             <div>
-            <label className="mb-2 block font-medium">
+            <label className="mb-2 block font-medium text-gray-500">
                 Height
             </label>
 
@@ -217,7 +189,7 @@ export default function Dashboard() {
                 setHeight(Number(e.target.value))
                 }
                 placeholder="Height"
-                className="w-full rounded-xl border px-4 py-3"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500"
             />
             </div>
 
@@ -227,13 +199,13 @@ export default function Dashboard() {
                 defaultChecked
             />
 
-            <span>Maintain Aspect Ratio</span>
+            <span className="text-gray-500">Maintain Aspect Ratio</span>
             </label>
         </div>
         )}
 
         <div className="absolute bottom-0 left-0 w-full border-t bg-white p-6">
-          <button className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg transition hover:scale-[1.02]">
+          <button className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg transition hover:scale-[1.02]" onClick={ () => resizeAndDownload({ images }) }>
             Resize Images
           </button>
         </div>

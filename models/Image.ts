@@ -6,4 +6,6 @@ export interface Image {
   height: number;
   width: number;
   uri: string;
+  resizedHeight?: number;
+  resizedWidth?: number;
 }
