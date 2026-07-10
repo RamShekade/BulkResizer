@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { useImages } from "../hooks/useImages";
 import { getSizeByPercentage, getSizeByPixels } from "../utils/getSize";
@@ -9,6 +10,13 @@ import ImageCard from "../components/imageCard";
 
 export default function Dashboard() {
     const { images } = useImages();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (images.length === 0) {
+            router.replace("/");
+        }
+    }, [images.length, router]);
 
     const [percentage, setPercentage] = useState<number>(50);
     const [width, setWidth] = useState<number | "">("");
