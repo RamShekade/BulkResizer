@@ -22,6 +22,7 @@ export default function Dashboard() {
     const [width, setWidth] = useState<number | "">("");
     const [height, setHeight] = useState<number | "">("");
     const [mode, setMode] = useState<"pixels" | "percentage">("percentage");
+    const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
     const { resizeAndDownload } = useResizeImages();
 
 
@@ -50,9 +51,15 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {images.map((image) => {
-              const {resizedWidth , resizedHeight} = mode === "percentage"
+              const { resizedWidth, resizedHeight } = mode === "percentage"
                 ? getSizeByPercentage(image.width, image.height, percentage)
-                : getSizeByPixels(image.width, image.height, Number(width), Number(height));
+                : getSizeByPixels(
+                    image.width,
+                    image.height,
+                    width === "" ? undefined : width,
+                    height === "" ? undefined : height,
+                    maintainAspectRatio
+                  );
               image.resizedHeight = resizedHeight;
               image.resizedWidth = resizedWidth;
 
@@ -178,7 +185,7 @@ export default function Dashboard() {
                 type="number"
                 value={width}
                 onChange={(e) =>
-                setWidth(Number(e.target.value))
+                setWidth(e.target.value === "" ? "" : Number(e.target.value))
                 }
                 placeholder="Width"
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500"
@@ -194,7 +201,7 @@ export default function Dashboard() {
                 type="number"
                 value={height}
                 onChange={(e) =>
-                setHeight(Number(e.target.value))
+                setHeight(e.target.value === "" ? "" : Number(e.target.value))
                 }
                 placeholder="Height"
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500"
@@ -204,7 +211,8 @@ export default function Dashboard() {
             <label className="flex items-center gap-3">
             <input
                 type="checkbox"
-                defaultChecked
+                checked={maintainAspectRatio}
+                onChange={(e) => setMaintainAspectRatio(e.target.checked)}
             />
 
             <span className="text-gray-500">Maintain Aspect Ratio</span>
