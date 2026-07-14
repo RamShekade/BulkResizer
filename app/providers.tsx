@@ -7,7 +7,7 @@ import {
     QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ImageProvider } from './context/ImageContext';
+import { ImageProvider } from './hooks/ImageContext';
 
 interface ProvidersProps {
     children: ReactNode;

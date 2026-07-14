@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { CloudUpload } from "lucide-react";
 import { Image } from "@/models/Image";
 import { useRouter } from "next/navigation";
-import { useImages } from "./hooks/useImages";
+import { useImageContext } from "./hooks/ImageContext";
 
 interface UploadHeroProps {
   onFilesSelected?: (files: File[]) => void;
@@ -15,7 +15,7 @@ export default function UploadHero({
 }: UploadHeroProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
-  const { setImages } = useImages();
+  const { setImages } = useImageContext();
   const router = useRouter();
 
   const handleFiles = useCallback(

@@ -1,14 +1,17 @@
 import { Image } from "@/models/Image";
+
+
 export default function ImageCard({
   image,
-}: { image: Image }) {
+  onRemoveImage,
+}: { image: Image, onRemoveImage: (id: string) => void }) {
   return (
             <div
                 key={image.id}
                 className="group relative rounded-2xl border border-gray-200 bg-white px-3 py-10 shadow-sm transition-all hover:border-pink-300 hover:shadow-lg"
                 >
 
-                <button className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-500 shadow transition hover:bg-red-50 hover:text-red-500">
+                <button onClick={() => onRemoveImage(image.id)} className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border bg-white text-gray-500 shadow transition hover:bg-red-50 hover:text-red-500">
                     ✕
                 </button>
 

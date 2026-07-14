@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import { useImages } from "../hooks/useImages";
+import { useImageContext } from "../hooks/ImageContext";
 import { getSizeByPercentage, getSizeByPixels } from "../utils/getSize";
 import { useResizeImages } from "../hooks/useResizeImgages";
 import ImageCard from "../components/imageCard";
-
+import { Image } from "@/models/Image";
 export default function Dashboard() {
-    const { images } = useImages();
+    const { images, removeImage, addImages } = useImageContext();
     const router = useRouter();
 
     useEffect(() => {
@@ -24,10 +24,44 @@ export default function Dashboard() {
     const [mode, setMode] = useState<"pixels" | "percentage">("percentage");
     const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
     const { resizeAndDownload } = useResizeImages();
+    const inputRef = useRef<HTMLInputElement>(null);
+    const presets = [25, 50, 75];
+    const onRemoveImage = (id: string) => {
+        removeImage(id);
+    };
 
-
-  const presets = [25, 50, 75];
-
+    const handleAddFiles = useCallback(
+      async (fileList: FileList | null) => {
+        if (!fileList) return;
+  
+        const files = Array.from(fileList).filter((file) =>
+          file.type.startsWith("image/")
+        );
+        if (!files.length) return;
+  
+        const images: Image[] = [];
+  
+        await Promise.all(
+          files.map(async (file) => {
+            const imageBitmap = await createImageBitmap(file);
+            const image: Image = {
+              id: crypto.randomUUID(),
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              uri: URL.createObjectURL(file),
+              height: imageBitmap.height,
+              width: imageBitmap.width,
+            };
+            images.push(image);
+          })
+        );
+  
+        addImages(images);
+      },
+      [addImages]
+    );
+  
   return (
     <main className="flex min-h-screen bg-[#faf8fc]">
 
@@ -37,9 +71,17 @@ export default function Dashboard() {
             Uploaded Images
           </h1>
 
-          <div className="rounded-full bg-pink-100 px-4 py-2 text-sm font-semibold text-pink-600">
-            {images.length} Images
-          </div>
+          <button onClick={() => inputRef.current?.click()} className="rounded-full bg-pink-100 px-4 py-2 text-sm font-semibold text-pink-600">
+            Add Images
+          </button>
+
+          <input
+            type="file"
+            ref={inputRef}
+            onChange={(e) => handleAddFiles(e.target.files)}
+            className="hidden"
+            multiple
+          />
         </div>
 
         {images.length === 0 ? (
@@ -64,7 +106,7 @@ export default function Dashboard() {
               image.resizedWidth = resizedWidth;
 
               return (
-                <ImageCard key={image.id} image={image} />
+                <ImageCard key={image.id} image={image} onRemoveImage={onRemoveImage} />
               );
             })}
           </div>
