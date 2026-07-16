@@ -53,12 +53,12 @@ export default function UploadHero({
   );
 
   return (
-    <section className="flex flex-col items-center py-24">
-      <h1 className="text-6xl font-bold">
+    <section className="flex flex-col items-center bg-[#faf8fc] py-24">
+      <h1 className="text-6xl font-bold text-zinc-900">
         Resize Images
       </h1>
 
-      <p className="mt-4 text-center text-lg text-gray-600">
+      <p className="mt-4 text-center text-lg text-zinc-400">
         Upload multiple images and resize them in seconds.
       </p>
 
@@ -101,11 +101,11 @@ export default function UploadHero({
           className="text-pink-600"
         />
 
-        <h2 className="mt-6 text-3xl font-bold">
+        <h2 className="mt-6 text-3xl font-bold text-zinc-400">
           Drop Images Here
         </h2>
 
-        <p className="mt-3 text-gray-500">
+        <p className="mt-3 text-zinc-400">
           or click to browse
         </p>
 

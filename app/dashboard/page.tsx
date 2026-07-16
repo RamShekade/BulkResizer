@@ -187,7 +187,11 @@ export default function Dashboard() {
             ))}
             </div>
 
-            <div className="p-5">
+            <div className="p-2">
+            <span className="text-[14px] text-pink-500"> Image will be reduced by {percentage}%</span>
+            </div>
+
+            <div className="p-3">
             <label className="mb-2 block font-medium text-gray-700">
                 Custom Percentage
             </label>
