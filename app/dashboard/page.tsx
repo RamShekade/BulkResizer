@@ -71,9 +71,30 @@ export default function Dashboard() {
             Uploaded Images
           </h1>
 
-          <button onClick={() => inputRef.current?.click()} className="rounded-full bg-pink-100 px-4 py-2 text-sm font-semibold text-pink-600">
-            Add Images
+          <div className="group relative">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            aria-label="Add more images"
+            className="relative flex h-12 w-12 items-center justify-center rounded-full bg-pink-600 text-white shadow-md transition hover:bg-pink-700"
+          >
+            <span className="text-[40px] leading-none">+</span>
+
+            {images.length > 0 && (
+              <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600 bg-black text-[10px] font-semibold text-white">
+                {images.length}
+              </span>
+            )}
           </button>
+
+          <div
+            role="tooltip"
+            className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-white opacity-0 shadow transition group-hover:opacity-100"
+          >
+            Add more images
+            <span className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-neutral-800" />
+          </div>
+        </div>
 
           <input
             type="file"
@@ -252,8 +273,9 @@ export default function Dashboard() {
                 placeholder="Height"
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-500"
             />
+            <span className="text-[14px] text-pink-500">Images will be resized to the provided width and height.</span>
             </div>
-
+            
             <label className="flex items-center gap-3">
             <input
                 type="checkbox"
