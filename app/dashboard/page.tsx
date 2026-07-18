@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { useImageContext } from "../hooks/ImageContext";
 import { getSizeByPercentage, getSizeByPixels } from "../utils/getSize";
 import { useResizeImages } from "../hooks/useResizeImgages";
@@ -289,8 +289,9 @@ export default function Dashboard() {
         )}
 
         <div className="absolute bottom-0 left-0 w-full border-t bg-white p-6">
-          <button className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg transition hover:scale-[1.02]" onClick={ () => resizeAndDownload({ images }) }>
+          <button className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-pink-500 to-pink-600 py-5 text-xl font-semibold text-white shadow-lg transition hover:scale-[1.02]" onClick={ () => resizeAndDownload({ images }) }>
             Resize Images
+            <ArrowRight className="h-6 w-6" />
           </button>
         </div>
       </aside>
