@@ -8,6 +8,7 @@ import { getSizeByPercentage, getSizeByPixels } from "../utils/getSize";
 import { useResizeImages } from "../hooks/useResizeImgages";
 import ImageCard from "../components/imageCard";
 import { Image } from "@/models/Image";
+import { Header } from "../components/header";
 export default function Dashboard() {
     const { images, removeImage, addImages } = useImageContext();
     const router = useRouter();
@@ -63,14 +64,41 @@ export default function Dashboard() {
     );
   
   return (
+    <>
+    <Header />
     <main className="flex min-h-screen bg-[#faf8fc]">
-
       <section className="flex-1 overflow-y-auto p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Uploaded Images
-          </h1>
 
+        {images.length === 0 ? (
+          <div className="flex h-[70vh] items-center justify-center rounded-3xl border-2 border-dashed border-pink-200 bg-white">
+            <p className="text-lg text-gray-500">
+              No Images Uploaded
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {images.map((image) => {
+              const { resizedWidth, resizedHeight } = mode === "percentage"
+                ? getSizeByPercentage(image.width, image.height, percentage)
+                : getSizeByPixels(
+                    image.width,
+                    image.height,
+                    width === "" ? undefined : width,
+                    height === "" ? undefined : height,
+                    maintainAspectRatio
+                  );
+              image.resizedHeight = resizedHeight;
+              image.resizedWidth = resizedWidth;
+
+              return (
+                <ImageCard key={image.id} image={image} onRemoveImage={onRemoveImage} />
+              );
+            })}
+          </div>
+        )}
+      </section>
+      <div className="flex">
+      <div className="mr-6 mt-18">
           <div className="group relative">
           <button
             type="button"
@@ -104,35 +132,6 @@ export default function Dashboard() {
             multiple
           />
         </div>
-
-        {images.length === 0 ? (
-          <div className="flex h-[70vh] items-center justify-center rounded-3xl border-2 border-dashed border-pink-200 bg-white">
-            <p className="text-lg text-gray-500">
-              No Images Uploaded
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {images.map((image) => {
-              const { resizedWidth, resizedHeight } = mode === "percentage"
-                ? getSizeByPercentage(image.width, image.height, percentage)
-                : getSizeByPixels(
-                    image.width,
-                    image.height,
-                    width === "" ? undefined : width,
-                    height === "" ? undefined : height,
-                    maintainAspectRatio
-                  );
-              image.resizedHeight = resizedHeight;
-              image.resizedWidth = resizedWidth;
-
-              return (
-                <ImageCard key={image.id} image={image} onRemoveImage={onRemoveImage} />
-              );
-            })}
-          </div>
-        )}
-      </section>
 
       <aside className="sticky top-0 h-screen w-[380px] border-l border-pink-100 bg-white shadow-xl">
         <div className="border-b p-8">
@@ -295,6 +294,8 @@ export default function Dashboard() {
           </button>
         </div>
       </aside>
+      </div>
     </main>
+    </>
   );
 }
