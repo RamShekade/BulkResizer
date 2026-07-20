@@ -8,9 +8,12 @@ visit -  [https://bulk-resizer-aamd.vercel.app/](https://bulk-resizer-aamd.verce
 
 Users pick many images at once, set resize options (by percentage or pixels), preview the new dimensions, then export all resized files in one click. No accounts, no waiting on a server.
 
+## supports - webp, jpg, jpeg, png formats
+
+
 ## Why Frontend Only?
 
-- **Privacy** — Images stay on the user's device; nothing is uploaded
+- **Privacy** — Images stay on the user's device; nothing is uploaded to any storage
 - **Speed** — Resize runs locally with the Canvas API
 - **Simplicity** — No backend, database, or storage to maintain
 - **Cost** — No server bills for image processing
@@ -39,18 +42,6 @@ Upload (/) → ImageContext (state) → Dashboard (/dashboard)
 
 
 **Stack:** Next.js · React · TypeScript · Tailwind CSS
-
-## Work To Do
-
-- [ ] Fix percentage logic / UX (clarify “reduce by” vs “resize to”)
-- [ ] Rename `useResizeImgages.ts` → `useResizeImages.ts`
-- [ ] Add image format options (JPEG quality, PNG/WebP)
-- [ ] Show estimated output file size before download
-- [ ] Progress indicator for large batches
-- [ ] “Download individual image” option
-- [ ] Mobile-friendly layout for dashboard sidebar
-- [ ] Error handling for unsupported/corrupt images
-
 
 
 ## Getting Started
