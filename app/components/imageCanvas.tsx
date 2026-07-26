@@ -18,16 +18,16 @@ export function ImageCanvas({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <section className="relative flex-1 overflow-y-auto p-8">
-      <div className="absolute right-8 top-8 z-10">
+    <section className="relative min-h-[50vh] flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+      <div className="absolute right-4 top-4 z-10 sm:right-6 sm:top-6 lg:right-8 lg:top-8">
         <div className="group relative">
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
             aria-label="Add more images"
-            className="relative flex h-12 w-12 items-center justify-center rounded-full bg-pink-600 text-white shadow-md transition hover:bg-pink-700"
+            className="relative flex h-11 w-11 items-center justify-center rounded-full bg-pink-600 text-white shadow-md transition hover:bg-pink-700 sm:h-12 sm:w-12"
           >
-            <span className="text-[40px] leading-none">+</span>
+            <span className="text-[36px] leading-none sm:text-[40px]">+</span>
 
             {images.length > 0 && (
               <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600 bg-black text-[10px] font-semibold text-white">
@@ -38,7 +38,7 @@ export function ImageCanvas({
 
           <div
             role="tooltip"
-            className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-white opacity-0 shadow transition group-hover:opacity-100"
+            className="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-white opacity-0 shadow transition group-hover:opacity-100 sm:block"
           >
             Add more images
             <span className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-neutral-800" />
@@ -56,11 +56,13 @@ export function ImageCanvas({
       </div>
 
       {images.length === 0 ? (
-        <div className="flex h-[70vh] items-center justify-center rounded-3xl border-2 border-dashed border-pink-200 bg-white">
-          <p className="text-lg text-gray-500">No Images Uploaded</p>
+        <div className="flex h-[50vh] items-center justify-center rounded-2xl border-2 border-dashed border-pink-200 bg-white sm:h-[70vh] sm:rounded-3xl">
+          <p className="px-4 text-center text-base text-gray-500 sm:text-lg">
+            No Images Uploaded
+          </p>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 pt-14 sm:grid-cols-2 sm:gap-6 sm:pt-0 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {images.map((image) => (
             <ImageCard
               key={image.id}
